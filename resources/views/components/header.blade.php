@@ -36,6 +36,17 @@
                 </span>
             </a>
 
+            <!-- Airlines / Vendors -->
+            <a 
+                href="{{ route('vendors.index') }}" 
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 {{ str_starts_with($currentRoute ?? '', 'vendors') ? 'bg-red-50 text-red-600 border border-red-200/70 shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80' }}">
+                <i class="fa-solid fa-plane-departure text-[11px] {{ str_starts_with($currentRoute ?? '', 'vendors') ? 'text-red-600' : 'text-slate-400' }}"></i>
+                <span>Airlines</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold {{ str_starts_with($currentRoute ?? '', 'vendors') ? 'bg-red-600 text-white' : 'bg-slate-200/80 text-slate-700' }}">
+                    {{ \App\Models\Vendor::count() }}
+                </span>
+            </a>
+
             <!-- Flight Bookings -->
             <a 
                 href="{{ route('dashboard') }}#flight-search" 
