@@ -68,7 +68,6 @@
         <div>
             <div class="flex items-center justify-between px-3">
                 <p class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Customer Management</p>
-                <span class="text-[10px] font-semibold bg-red-600/30 text-red-300 px-1.5 py-0.5 rounded">Static UI</span>
             </div>
             
             <div class="mt-2 space-y-1">
@@ -83,7 +82,7 @@
                         <span>All Customers</span>
                     </div>
                     <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ str_starts_with($currentRoute, 'customers.index') ? 'bg-white/25 text-white' : 'bg-slate-800 text-slate-300' }}">
-                        1,420
+                        {{ \App\Models\Customer::count() }}
                     </span>
                 </a>
 

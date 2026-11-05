@@ -20,14 +20,11 @@
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2.5">
-                <span>Register New Customer</span>
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
-                    Auto-Code: AR-90{{ rand(10, 99) }}
-                </span>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
+                Register New Customer
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                Enter passport credentials, visa validity dates, emergency contacts, and personalized travel preferences.
+                Enter customer details. Only CNIC is required and unique; other fields are optional.
             </p>
         </div>
 
@@ -47,313 +44,175 @@
         </div>
     </div>
 
+    <!-- Error Summary (if any) -->
+    @if ($errors->any())
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>Please fix the following errors:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-rose-700">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Form Container -->
     <form id="create-customer-form" method="POST" action="{{ route('customers.store') }}" class="space-y-6">
         @csrf
 
-        <!-- Card 1: Personal Identification -->
+        <!-- Card: Customer Details -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
-                <span class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
-                    1
-                </span>
+            <div class="pb-4 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Personal Information</h2>
-                    <p class="text-xs text-slate-400">Primary legal details matching the traveler's passport.</p>
+                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Customer Profile Information</h2>
+                    <p class="text-xs text-slate-400">Personal, identity, and contact information.</p>
                 </div>
+                <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+                    * CNIC is required & unique
+                </span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-5">
                 
                 <!-- Title -->
                 <div class="sm:col-span-2 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Title *</label>
-                    <select class="w-full px-3 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Title</label>
+                    <select 
+                        name="title" 
+                        class="w-full px-3 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                        <option value="">Select Title</option>
                         @foreach($titles as $t)
-                            <option value="{{ $t }}">{{ $t }}</option>
+                            <option value="{{ $t }}" {{ old('title') === $t ? 'selected' : '' }}>{{ $t }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <!-- First & Middle Name -->
-                <div class="sm:col-span-5 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">First / Given Name(s) *</label>
+                <!-- Full Name -->
+                <div class="sm:col-span-6 space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Full Name</label>
                     <input 
                         type="text" 
-                        required 
-                        placeholder="e.g. Muhammad" 
+                        name="name" 
+                        value="{{ old('name') }}" 
+                        placeholder="e.g. Muhammad Hamza" 
                         class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
                     >
                 </div>
 
-                <!-- Last Name -->
-                <div class="sm:col-span-5 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Last / Surname *</label>
+                <!-- CNIC (Required & Unique) -->
+                <div class="sm:col-span-4 space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+                        <span>CNIC *</span>
+                        <span class="text-red-600">(Unique)</span>
+                    </label>
                     <input 
                         type="text" 
+                        name="cnic" 
                         required 
-                        placeholder="e.g. Hamza" 
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
+                        value="{{ old('cnic') }}" 
+                        placeholder="35202-1234567-1" 
+                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-mono font-bold text-slate-900 border @error('cnic') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
                     >
                 </div>
 
                 <!-- Date of Birth -->
                 <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Date of Birth *</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Date of Birth</label>
                     <input 
                         type="date" 
-                        required 
-                        value="1992-06-15"
+                        name="dob" 
+                        value="{{ old('dob') }}" 
                         class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
                     >
                 </div>
 
                 <!-- Gender -->
                 <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Gender *</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-
-                <!-- Nationality -->
-                <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Nationality *</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        @foreach($countries as $c)
-                            <option value="{{ $c }}">{{ $c }}</option>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Gender</label>
+                    <select 
+                        name="gender" 
+                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                        <option value="">Select Gender</option>
+                        @foreach($genders as $g)
+                            <option value="{{ $g }}" {{ old('gender') === $g ? 'selected' : '' }}>{{ $g }}</option>
                         @endforeach
                     </select>
                 </div>
 
-            </div>
-        </div>
-
-        <!-- Card 2: Contact & Address Information -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
-                <span class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
-                    2
-                </span>
-                <div>
-                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Contact & Residency Details</h2>
-                    <p class="text-xs text-slate-400">Communication channels for flight ticketing and visa updates.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-5">
-                
-                <!-- Email -->
-                <div class="sm:col-span-6 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Email Address *</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
-                            <i class="fa-regular fa-envelope text-xs"></i>
-                        </span>
-                        <input 
-                            type="email" 
-                            required 
-                            placeholder="traveler@example.com" 
-                            class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                        >
-                    </div>
-                </div>
-
-                <!-- Phone -->
-                <div class="sm:col-span-3 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Mobile Number *</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
-                            <i class="fa-solid fa-phone text-xs"></i>
-                        </span>
-                        <input 
-                            type="text" 
-                            required 
-                            placeholder="+92 300 1234567" 
-                            class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                        >
-                    </div>
-                </div>
-
-                <!-- WhatsApp -->
-                <div class="sm:col-span-3 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">WhatsApp Number</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-emerald-500 pointer-events-none">
-                            <i class="fa-brands fa-whatsapp text-xs"></i>
-                        </span>
-                        <input 
-                            type="text" 
-                            placeholder="+92 300 1234567" 
-                            class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                        >
-                    </div>
-                </div>
-
-                <!-- City -->
+                <!-- Passport -->
                 <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">City of Residence</label>
-                    <input 
-                        type="text" 
-                        placeholder="Lahore / Islamabad / Karachi" 
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
-
-                <!-- Street Address -->
-                <div class="sm:col-span-8 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Full Postal Address</label>
-                    <input 
-                        type="text" 
-                        placeholder="House #, Street, Phase / Sector, City" 
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Card 3: Passport & Travel Documentation -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
-                <span class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
-                    3
-                </span>
-                <div>
-                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Passport & Identification Archive</h2>
-                    <p class="text-xs text-slate-400">Strictly verified for GDS ticketing and international visa requirements.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-5">
-                
-                <!-- Passport Number -->
-                <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Passport Number *</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Passport Number</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                             <i class="fa-solid fa-passport text-xs"></i>
                         </span>
                         <input 
                             type="text" 
-                            required 
+                            name="passport" 
+                            value="{{ old('passport') }}" 
                             placeholder="e.g. PK8829104" 
                             class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-mono font-bold text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 uppercase transition-all"
                         >
                     </div>
                 </div>
 
-                <!-- Passport Country of Issue -->
+                <!-- Email -->
                 <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Issuing Country *</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        @foreach($countries as $c)
-                            <option value="{{ $c }}">{{ $c }}</option>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Email Address</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
+                            <i class="fa-regular fa-envelope text-xs"></i>
+                        </span>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            value="{{ old('email') }}" 
+                            placeholder="traveler@example.com" 
+                            class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
+                        >
+                    </div>
+                </div>
+
+                <!-- Number -->
+                <div class="sm:col-span-4 space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Contact Number</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
+                            <i class="fa-solid fa-phone text-xs"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            name="number" 
+                            value="{{ old('number') }}" 
+                            placeholder="+92 300 1234567" 
+                            class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-mono text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
+                        >
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="sm:col-span-4 space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Status</label>
+                    <select 
+                        name="status" 
+                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                        @foreach($statuses as $s)
+                            <option value="{{ $s }}" {{ old('status', 'Active') === $s ? 'selected' : '' }}>{{ $s }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <!-- Passport Expiry Date -->
-                <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Passport Expiry Date *</label>
-                    <input 
-                        type="date" 
-                        required 
-                        value="2031-10-20"
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
-
-                <!-- CNIC / National ID -->
-                <div class="sm:col-span-6 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">National ID / CNIC</label>
-                    <input 
-                        type="text" 
-                        placeholder="35202-xxxxxxx-x" 
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-mono font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
-
-                <!-- Loyalty / Club Tier -->
-                <div class="sm:col-span-6 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">VIP Loyalty Tier</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        <option value="Standard">Standard Member</option>
-                        <option value="Silver Member">Silver Member</option>
-                        <option value="Gold Member">Gold Member</option>
-                        <option value="Platinum VIP" selected>Platinum VIP (Exclusive Concierge)</option>
-                    </select>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Card 4: Travel Preferences & Airline Memberships -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
-                <span class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
-                    4
-                </span>
-                <div>
-                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Travel Preferences & Frequent Flyer</h2>
-                    <p class="text-xs text-slate-400">Personalized options automatically sent to airlines during PNR reservation.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-5">
-                
-                <!-- Preferred Airline -->
-                <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Preferred Carrier</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        @foreach($airlines as $a)
-                            <option value="{{ $a }}">{{ $a }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Frequent Flyer No -->
-                <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Frequent Flyer Number</label>
-                    <input 
-                        type="text" 
-                        placeholder="e.g. EK-9821038" 
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-mono font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
-
-                <!-- Seat Preference -->
-                <div class="sm:col-span-4 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Seating Preference</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        <option value="Window">Window Seat</option>
-                        <option value="Aisle">Aisle Seat</option>
-                        <option value="Extra Legroom">Extra Legroom / Bulkhead</option>
-                    </select>
-                </div>
-
-                <!-- Meal Preference -->
-                <div class="sm:col-span-6 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Special Meal Code</label>
-                    <select class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        <option value="MOML">Halal Muslim Meal (MOML)</option>
-                        <option value="AVML">Asian Vegetarian Meal (AVML)</option>
-                        <option value="DBML">Diabetic Meal (DBML)</option>
-                        <option value="GFML">Gluten Free Meal (GFML)</option>
-                        <option value="CHML">Child Meal (CHML)</option>
-                    </select>
-                </div>
-
-                <!-- Emergency Contact Name & Phone -->
-                <div class="sm:col-span-6 space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Emergency Contact (Name & Phone)</label>
-                    <input 
-                        type="text" 
-                        placeholder="e.g. Ayesha Hamza (+92 321 4455667)" 
-                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
+                <!-- Address -->
+                <div class="sm:col-span-12 space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Address</label>
+                    <textarea 
+                        name="address" 
+                        rows="3" 
+                        placeholder="House #, Street, Phase / Sector, City" 
+                        class="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-medium text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">{{ old('address') }}</textarea>
                 </div>
 
             </div>
@@ -361,10 +220,9 @@
 
         <!-- Form Action Bar -->
         <div class="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3 text-xs text-slate-500">
-                <i class="fa-solid fa-lock text-red-600"></i>
-                <span>All documents are encrypted with AES-256 for traveler privacy compliance.</span>
-            </div>
+            <span class="text-xs text-slate-500">
+                Customer record will be saved directly into SQLite database.
+            </span>
 
             <div class="flex items-center gap-3 w-full sm:w-auto">
                 <a 
@@ -385,4 +243,3 @@
 
 </div>
 @endsection
-

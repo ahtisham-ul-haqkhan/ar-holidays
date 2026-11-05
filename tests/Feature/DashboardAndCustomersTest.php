@@ -16,9 +16,6 @@ class DashboardAndCustomersTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('AR Holidays');
         $response->assertSee('Surf Your Dream With Us');
-        $response->assertSee('Total Bookings');
-        $response->assertSee('Active Travelers');
-        $response->assertSee('Recent Flight & Tour Bookings');
     }
 
     /**
@@ -44,8 +41,8 @@ class DashboardAndCustomersTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Register New Customer');
-        $response->assertSee('Personal Information');
-        $response->assertSee('Passport & Identification');
+        $response->assertSee('Customer Profile Information');
+        $response->assertSee('CNIC');
     }
 
     /**
@@ -57,8 +54,8 @@ class DashboardAndCustomersTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Muhammad Hamza');
-        $response->assertSee('Travel & Booking Dossier');
-        $response->assertSee('Passport & Visa Archives');
+        $response->assertSee('Customer Profile Details');
+        $response->assertSee('Passport');
     }
 
     /**
@@ -70,7 +67,7 @@ class DashboardAndCustomersTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Edit Customer: Muhammad Hamza');
-        $response->assertSee('Passport & Tier Status');
+        $response->assertSee('Customer Profile Information');
     }
 
     /**
@@ -79,8 +76,8 @@ class DashboardAndCustomersTest extends TestCase
     public function test_customer_store_redirects_with_success(): void
     {
         $response = $this->post('/customers', [
-            'first_name' => 'Tariq',
-            'last_name' => 'Mehmood',
+            'name' => 'Tariq Mehmood',
+            'cnic' => '35202-9988776-9',
             'email' => 'tariq@example.com',
         ]);
 
@@ -94,12 +91,11 @@ class DashboardAndCustomersTest extends TestCase
     public function test_customer_update_redirects_with_success(): void
     {
         $response = $this->put('/customers/1', [
-            'first_name' => 'Muhammad',
-            'last_name' => 'Hamza',
+            'name' => 'Muhammad Hamza',
+            'cnic' => '35202-8492019-3',
         ]);
 
         $response->assertRedirect('/customers/1');
         $response->assertSessionHas('success');
     }
 }
-

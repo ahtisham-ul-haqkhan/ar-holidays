@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $customer['full_name'] . ' · Traveler Profile · AR Holidays')
+@section('title', ($customer->name ?? 'Customer') . ' · AR Holidays')
 
 @section('content')
 <div class="space-y-6 w-full">
@@ -14,304 +14,181 @@
         <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
         <a href="{{ route('customers.index') }}" class="hover:text-red-600 transition-colors">Customers</a>
         <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <span class="text-slate-800 font-semibold">{{ $customer['full_name'] }}</span>
+        <span class="text-slate-800 font-semibold">{{ $customer->name ?? 'Customer #' . $customer->id }}</span>
     </nav>
 
     <!-- Top Profile Summary Card -->
     <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-80 h-80 bg-red-500/5 rounded-full blur-3xl pointer-events-none"></div>
-
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             
             <!-- Left Info -->
             <div class="flex flex-col sm:flex-row sm:items-center gap-5">
-                <div class="relative shrink-0">
-                    <img 
-                        src="{{ $customer['avatar'] }}" 
-                        alt="{{ $customer['full_name'] }}" 
-                        class="w-24 h-24 rounded-2xl object-cover ring-4 ring-slate-100 shadow-md">
-                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 ring-4 ring-white flex items-center justify-center text-white text-[9px]">
-                        <i class="fa-solid fa-check"></i>
-                    </span>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-rose-700 text-white flex items-center justify-center font-bold text-2xl shadow-md shadow-red-500/20 shrink-0 uppercase">
+                    {{ substr($customer->name ?? 'C', 0, 1) }}
                 </div>
 
-                <div class="space-y-2">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
-                            {{ $customer['full_name'] }}
+                <div class="space-y-1.5">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2">
+                            @if($customer->title)
+                                <span class="text-lg text-slate-400 font-semibold">{{ $customer->title }}</span>
+                            @endif
+                            <span>{{ $customer->name ?? 'Unnamed Customer' }}</span>
                         </h1>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $customer['tier_badge_color'] }}">
-                            <i class="fa-solid fa-crown text-[10px] mr-1"></i>
-                            {{ $customer['loyalty_tier'] }}
-                        </span>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $customer['status_color'] }}">
-                            {{ $customer['status'] }}
-                        </span>
+                        @if($customer->status === 'Active')
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                            </span>
+                        @else
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Inactive
+                            </span>
+                        @endif
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500">
-                        <span class="flex items-center gap-1.5 font-mono font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">
-                            <i class="fa-solid fa-id-badge text-[11px]"></i>
-                            {{ $customer['customer_code'] }}
+                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                        <span class="font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
+                            CNIC: {{ $customer->cnic }}
                         </span>
-                        <span class="flex items-center gap-1.5">
-                            <i class="fa-solid fa-passport text-slate-400"></i>
-                            Passport: <strong class="text-slate-700 font-mono">{{ $customer['passport_number'] }}</strong>
+                        @if($customer->passport)
+                            <span class="flex items-center gap-1 font-mono font-semibold text-slate-700">
+                                <i class="fa-solid fa-passport text-slate-400"></i>
+                                Passport: {{ $customer->passport }}
+                            </span>
+                        @endif
+                        <span class="text-slate-400">·</span>
+                        <span class="text-slate-400">
+                            Registered: {{ $customer->created_at ? $customer->created_at->format('d M Y') : 'N/A' }}
                         </span>
-                        <span class="flex items-center gap-1.5">
-                            <i class="fa-solid fa-location-dot text-slate-400"></i>
-                            {{ $customer['city'] }}, {{ $customer['nationality'] }}
-                        </span>
-                        <span class="flex items-center gap-1.5">
-                            <i class="fa-regular fa-calendar text-slate-400"></i>
-                            Client Since: {{ $customer['member_since'] }}
-                        </span>
-                    </div>
-
-                    <!-- Direct Contact Badges -->
-                    <div class="pt-1 flex flex-wrap items-center gap-2">
-                        <a href="mailto:{{ $customer['email'] }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors">
-                            <i class="fa-regular fa-envelope text-slate-500 text-[11px]"></i>
-                            {{ $customer['email'] }}
-                        </a>
-                        <a href="tel:{{ $customer['phone'] }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors">
-                            <i class="fa-solid fa-phone text-slate-500 text-[11px]"></i>
-                            {{ $customer['phone'] }}
-                        </a>
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $customer['whatsapp']) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition-colors">
-                            <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
-                            WhatsApp Message
-                        </a>
                     </div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-wrap sm:flex-col gap-2.5 shrink-0">
+            <div class="flex items-center gap-2.5 shrink-0">
                 <a 
-                    href="{{ route('customers.edit', $customer['id']) }}" 
-                    class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-xs transition-colors">
+                    href="{{ route('customers.index') }}" 
+                    class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-all shadow-xs">
+                    Back to List
+                </a>
+                <a 
+                    href="{{ route('customers.edit', $customer->id) }}" 
+                    class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-2 shadow-xs transition-colors">
                     <i class="fa-solid fa-user-pen text-xs"></i>
                     <span>Edit Profile</span>
                 </a>
-                <button 
-                    type="button" 
-                    onclick="alert('Creating new flight booking for {{ $customer['full_name'] }}...')" 
-                    class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold uppercase tracking-wider text-center flex items-center justify-center gap-2 shadow-md shadow-red-600/20 transition-all">
-                    <i class="fa-solid fa-plane-departure text-xs"></i>
-                    <span>New Booking</span>
-                </button>
+                <form 
+                    action="{{ route('customers.destroy', $customer->id) }}" 
+                    method="POST" 
+                    onsubmit="return confirm('Are you sure you want to delete this customer?');" 
+                    class="inline-block">
+                    @csrf
+                    @method('DELETE')
+                    <button 
+                        type="submit" 
+                        class="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold flex items-center gap-1.5 transition-colors"
+                        title="Delete customer">
+                        <i class="fa-regular fa-trash-can text-xs"></i>
+                        <span>Delete</span>
+                    </button>
+                </form>
             </div>
 
         </div>
     </div>
 
-    <!-- 4 Stats Cards for Traveler -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Bookings</p>
-            <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-heading">{{ $customer['total_bookings'] }} Trips</h3>
-            <p class="text-[11px] text-slate-400 mt-0.5">Flights & Holiday Tours</p>
+    <!-- Details Card (Strictly Matching Migration Columns) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+        <div class="pb-4 border-b border-slate-100">
+            <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Customer Profile Details</h2>
+            <p class="text-xs text-slate-400">All registered attributes for this customer profile.</p>
         </div>
 
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Revenue</p>
-            <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-heading">{{ $customer['total_spend'] }}</h3>
-            <p class="text-[11px] text-emerald-600 font-semibold mt-0.5"><i class="fa-solid fa-circle-check text-[10px]"></i> Zero Outstanding Balance</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Passport Status</p>
-            <h3 class="text-lg font-bold text-slate-900 mt-1 truncate">{{ $customer['passport_status'] }}</h3>
-            <p class="text-[11px] text-slate-400 mt-0.5">Expires: {{ date('d M Y', strtotime($customer['passport_expiry'])) }}</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Frequent Carrier</p>
-            <h3 class="text-lg font-bold text-slate-900 mt-1 truncate">{{ $customer['preferences']['airline'] }}</h3>
-            <p class="text-[11px] text-red-600 font-semibold mt-0.5">Priority Check-in Active</p>
-        </div>
-    </div>
-
-    <!-- Tabbed Profile Content -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Left Column: Travel History & Bookings (8 Cols) -->
-        <div class="lg:col-span-8 space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-xs">
             
-            <!-- Bookings History Table -->
-            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-900 font-heading">Travel & Booking Dossier</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Past and upcoming itineraries booked through AR Holidays.</p>
-                    </div>
-                    <button type="button" onclick="alert('Creating new ticket voucher...')" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
-                        + Issue Ticket
-                    </button>
-                </div>
-
-                <div class="divide-y divide-slate-100">
-                    @foreach($customer['bookings'] as $bkg)
-                        <div class="p-6 hover:bg-slate-50/70 transition-colors">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="text-sm font-bold text-slate-900">{{ $bkg['title'] }}</h3>
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border {{ $bkg['status_color'] }}">
-                                            {{ $bkg['status'] }}
-                                        </span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mt-1">
-                                        {{ $bkg['airline'] }} · <strong class="text-slate-700">{{ $bkg['destination'] }}</strong>
-                                    </p>
-                                </div>
-
-                                <div class="text-right sm:text-right">
-                                    <p class="text-base font-extrabold text-slate-900 font-heading">{{ $bkg['amount'] }}</p>
-                                    <p class="text-[11px] font-mono text-slate-400">PNR: {{ $bkg['pnr'] }}</p>
-                                </div>
-                            </div>
-
-                            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-                                <div class="flex items-center gap-4">
-                                    <span><i class="fa-regular fa-calendar-days text-slate-400 mr-1"></i> Dep: {{ $bkg['departure'] }}</span>
-                                    <span><i class="fa-solid fa-rotate-left text-slate-400 mr-1"></i> Ret: {{ $bkg['return'] }}</span>
-                                    <span><i class="fa-solid fa-users text-slate-400 mr-1"></i> {{ $bkg['passengers'] }} Pax</span>
-                                </div>
-
-                                <div class="flex items-center gap-2">
-                                    <button type="button" onclick="alert('E-ticket for {{ $bkg['pnr'] }} downloaded.')" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors">
-                                        <i class="fa-solid fa-download text-[10px] mr-1"></i> E-Ticket PDF
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+            <!-- Title -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Title</span>
+                <p class="text-sm font-bold text-slate-900">{{ $customer->title ?: '—' }}</p>
             </div>
 
-            <!-- Documents & Visas Card -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-900 font-heading">Passport & Visa Archives</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Verified travel documents on file for rapid visa submissions.</p>
-                    </div>
-                    <button type="button" onclick="alert('Upload document dialog opened.')" class="px-3 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition-colors">
-                        + Upload Document
-                    </button>
-                </div>
+            <!-- Full Name -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Full Name</span>
+                <p class="text-sm font-bold text-slate-900">{{ $customer->name ?: '—' }}</p>
+            </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    @foreach($customer['documents'] as $doc)
-                        <div class="p-4 rounded-2xl border border-slate-200/80 hover:border-slate-300 transition-colors flex items-center justify-between gap-3 bg-slate-50/50">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-red-600 text-base shadow-xs">
-                                    <i class="fa-solid fa-file-shield"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-xs font-bold text-slate-900">{{ $doc['title'] }}</h4>
-                                    <p class="text-[11px] text-slate-400">Validity: {{ $doc['expiry'] }}</p>
-                                </div>
-                            </div>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $doc['status'] === 'Verified' || $doc['status'] === 'Valid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200' }}">
-                                {{ $doc['status'] }}
-                            </span>
-                        </div>
-                    @endforeach
-                </div>
+            <!-- CNIC -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px] flex items-center justify-between">
+                    <span>CNIC</span>
+                    <span class="text-emerald-600 font-semibold text-[10px]">Unique</span>
+                </span>
+                <p class="text-sm font-mono font-bold text-slate-900">{{ $customer->cnic }}</p>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Date of Birth</span>
+                <p class="text-sm font-semibold text-slate-900">
+                    {{ $customer->dob ? $customer->dob->format('d F Y') : '—' }}
+                </p>
+            </div>
+
+            <!-- Gender -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Gender</span>
+                <p class="text-sm font-semibold text-slate-900">{{ $customer->gender ?: '—' }}</p>
+            </div>
+
+            <!-- Passport -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Passport Number</span>
+                <p class="text-sm font-mono font-bold text-slate-900">{{ $customer->passport ?: '—' }}</p>
+            </div>
+
+            <!-- Email -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Email Address</span>
+                <p class="text-sm font-medium text-slate-900">
+                    @if($customer->email)
+                        <a href="mailto:{{ $customer->email }}" class="text-red-600 hover:underline">
+                            {{ $customer->email }}
+                        </a>
+                    @else
+                        —
+                    @endif
+                </p>
+            </div>
+
+            <!-- Contact Number -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Contact Number</span>
+                <p class="text-sm font-mono font-medium text-slate-900">
+                    @if($customer->number)
+                        <a href="tel:{{ $customer->number }}" class="text-slate-900 hover:text-red-600">
+                            {{ $customer->number }}
+                        </a>
+                    @else
+                        —
+                    @endif
+                </p>
+            </div>
+
+            <!-- Status -->
+            <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Account Status</span>
+                <p class="text-sm font-semibold text-slate-900">{{ $customer->status }}</p>
+            </div>
+
+            <!-- Address (Full width) -->
+            <div class="sm:col-span-2 lg:col-span-3 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-1">
+                <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Address</span>
+                <p class="text-sm text-slate-800 leading-relaxed">{{ $customer->address ?: '—' }}</p>
             </div>
 
         </div>
-
-        <!-- Right Column: Personal & Preferences Details (4 Cols) -->
-        <div class="lg:col-span-4 space-y-6">
-            
-            <!-- Personal Information Sheet -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
-                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading pb-3 border-b border-slate-100">
-                    Traveler Credentials
-                </h3>
-
-                <div class="space-y-3 text-xs">
-                    <div>
-                        <span class="text-slate-400 font-medium">Full Name (as per Passport):</span>
-                        <p class="font-bold text-slate-900 mt-0.5">{{ $customer['full_name'] }}</p>
-                    </div>
-
-                    <div>
-                        <span class="text-slate-400 font-medium">National Identity (CNIC):</span>
-                        <p class="font-mono font-bold text-slate-900 mt-0.5">{{ $customer['cnic'] }}</p>
-                    </div>
-
-                    <div>
-                        <span class="text-slate-400 font-medium">Date of Birth:</span>
-                        <p class="font-medium text-slate-800 mt-0.5">{{ date('d F Y', strtotime($customer['dob'])) }}</p>
-                    </div>
-
-                    <div>
-                        <span class="text-slate-400 font-medium">Gender / Nationality:</span>
-                        <p class="font-medium text-slate-800 mt-0.5">{{ $customer['gender'] }} · {{ $customer['nationality'] }}</p>
-                    </div>
-
-                    <div>
-                        <span class="text-slate-400 font-medium">Residential Address:</span>
-                        <p class="font-medium text-slate-800 mt-0.5">{{ $customer['address'] }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- In-Flight Travel Preferences -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
-                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading pb-3 border-b border-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-red-600"></i> Airline Preferences
-                </h3>
-
-                <div class="space-y-3 text-xs">
-                    <div>
-                        <span class="text-slate-400 font-medium">Preferred Seating:</span>
-                        <p class="font-bold text-slate-800 mt-0.5 flex items-center gap-1.5">
-                            <i class="fa-solid fa-chair text-slate-400"></i>
-                            {{ $customer['preferences']['seat'] }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <span class="text-slate-400 font-medium">Dietary & Meal Code:</span>
-                        <p class="font-bold text-slate-800 mt-0.5 flex items-center gap-1.5">
-                            <i class="fa-solid fa-utensils text-slate-400"></i>
-                            {{ $customer['preferences']['meal'] }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <span class="text-slate-400 font-medium">Hotel Accommodation Standard:</span>
-                        <p class="font-bold text-slate-800 mt-0.5 flex items-center gap-1.5">
-                            <i class="fa-solid fa-hotel text-slate-400"></i>
-                            {{ $customer['preferences']['hotel'] }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Emergency Contact Card -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
-                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading pb-3 border-b border-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-kit-medical text-red-600"></i> Emergency Contact
-                </h3>
-
-                <div class="text-xs space-y-1">
-                    <p class="font-bold text-slate-900 text-sm">{{ $customer['emergency_contact']['name'] }}</p>
-                    <p class="text-slate-500">Relationship: <strong class="text-slate-700 font-semibold">{{ $customer['emergency_contact']['relation'] }}</strong></p>
-                    <p class="text-slate-500">Phone: <strong class="text-slate-700 font-mono font-semibold">{{ $customer['emergency_contact']['phone'] }}</strong></p>
-                </div>
-            </div>
-
-        </div>
-
     </div>
 
 </div>
 @endsection
-
