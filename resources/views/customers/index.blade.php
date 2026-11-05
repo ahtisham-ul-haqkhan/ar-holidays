@@ -3,7 +3,7 @@
 @section('title', 'Customers Directory · AR Holidays')
 
 @section('content')
-<div class="space-y-6 max-w-7xl mx-auto">
+<div class="space-y-6 w-full">
 
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs text-slate-500 font-medium">

@@ -1,5 +1,5 @@
 <footer class="mt-auto px-6 sm:px-8 py-6 bg-white border-t border-slate-200/80 text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-4">
         
         <!-- Brand & Tagline -->
         <div class="flex items-center gap-3">
