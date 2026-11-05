@@ -18,30 +18,13 @@
     </nav>
 
     <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
-                Register New Airline / Vendor
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                Add partner airline carriers such as PIA, Airblue, AirSial, Emirates, or FlyDubai.
-            </p>
-        </div>
-
-        <div class="flex items-center gap-2.5 shrink-0">
-            <a 
-                href="{{ route('vendors.index') }}" 
-                class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-all shadow-xs">
-                Cancel
-            </a>
-            <button 
-                type="submit" 
-                form="create-vendor-form" 
-                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold tracking-wide uppercase shadow-md shadow-red-600/25 hover:shadow-lg transition-all flex items-center gap-2">
-                <i class="fa-solid fa-check text-xs"></i>
-                <span>Save Vendor</span>
-            </button>
-        </div>
+    <div class="pb-2 border-b border-slate-200">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
+            Register New Airline / Vendor
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+            Add partner airline carriers such as PIA, Airblue, AirSial, Emirates, or FlyDubai.
+        </p>
     </div>
 
     <!-- Error Summary (if any) -->
@@ -110,27 +93,27 @@
                     </select>
                 </div>
 
-            </div>
-        </div>
+                <!-- Form Actions (Inside Main Card) -->
+                <div class="sm:col-span-12 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span class="text-xs text-slate-500">
+                        Airline / Vendor record will be stored in database.
+                    </span>
 
-        <!-- Form Action Bar -->
-        <div class="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span class="text-xs text-slate-500">
-                Airline / Vendor record will be stored in SQLite database.
-            </span>
+                    <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                        <a 
+                            href="{{ route('vendors.index') }}" 
+                            class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors">
+                            Cancel
+                        </a>
+                        <button 
+                            type="submit" 
+                            class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold uppercase tracking-wider shadow-md shadow-red-600/30 transition-all flex items-center justify-center gap-2 transform active:scale-95">
+                            <i class="fa-solid fa-check"></i>
+                            <span>Save Airline / Vendor</span>
+                        </button>
+                    </div>
+                </div>
 
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <a 
-                    href="{{ route('vendors.index') }}" 
-                    class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold text-center transition-colors">
-                    Cancel
-                </a>
-                <button 
-                    type="submit" 
-                    class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold uppercase tracking-wider shadow-md shadow-red-600/30 transition-all flex items-center justify-center gap-2 transform active:scale-95">
-                    <i class="fa-solid fa-check"></i>
-                    <span>Save Airline / Vendor</span>
-                </button>
             </div>
         </div>
 
