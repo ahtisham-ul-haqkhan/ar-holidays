@@ -39,43 +39,49 @@
         </div>
     </div>
 
-    <!-- Quick Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center justify-between">
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Customers</p>
-                <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-heading">{{ $stats['total'] }}</h3>
-                <span class="text-[11px] text-slate-400 mt-1 block">Registered in database</span>
+    <!-- Quick Stats Cards (Compact Height) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="bg-white rounded-xl px-4 py-3 border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Customers</p>
+                    <h3 class="text-lg font-extrabold text-slate-900 font-heading leading-tight">{{ $stats['total'] }}</h3>
+                </div>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-users"></i>
-            </div>
+            <span class="text-[11px] text-slate-400 font-medium">All Records</span>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center justify-between">
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Customers</p>
-                <h3 class="text-2xl font-extrabold text-emerald-600 mt-1 font-heading">{{ $stats['active'] }}</h3>
-                <span class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Currently active
-                </span>
+        <div class="bg-white rounded-xl px-4 py-3 border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Customers</p>
+                    <h3 class="text-lg font-extrabold text-emerald-600 font-heading leading-tight">{{ $stats['active'] }}</h3>
+                </div>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-user-check"></i>
-            </div>
+            <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+            </span>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center justify-between">
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Inactive Customers</p>
-                <h3 class="text-2xl font-extrabold text-slate-500 mt-1 font-heading">{{ $stats['inactive'] }}</h3>
-                <span class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Inactive / Archived
-                </span>
+        <div class="bg-white rounded-xl px-4 py-3 border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Inactive Customers</p>
+                    <h3 class="text-lg font-extrabold text-slate-500 font-heading leading-tight">{{ $stats['inactive'] }}</h3>
+                </div>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-user-slash"></i>
-            </div>
+            <span class="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Inactive
+            </span>
         </div>
     </div>
 
@@ -141,7 +147,6 @@
                         <th class="py-3.5 px-4">Passport</th>
                         <th class="py-3.5 px-4">Contact</th>
                         <th class="py-3.5 px-4">DOB / Gender</th>
-                        <th class="py-3.5 px-4">Address</th>
                         <th class="py-3.5 px-4">Status</th>
                         <th class="py-3.5 px-5 text-right">Actions</th>
                     </tr>
@@ -204,11 +209,6 @@
                                 </div>
                             </td>
 
-                            <!-- Address -->
-                            <td class="py-4 px-4 max-w-xs truncate" title="{{ $customer->address }}">
-                                <span class="text-slate-600 text-xs">{{ $customer->address ?: '—' }}</span>
-                            </td>
-
                             <!-- Status -->
                             <td class="py-4 px-4 whitespace-nowrap">
                                 @if($customer->status === 'Active')
@@ -257,7 +257,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="py-12 text-center text-slate-400">
+                            <td colspan="8" class="py-12 text-center text-slate-400">
                                 <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl mb-3">
                                     <i class="fa-solid fa-user-slash"></i>
                                 </div>

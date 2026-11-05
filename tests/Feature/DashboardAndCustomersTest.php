@@ -95,7 +95,7 @@ class DashboardAndCustomersTest extends TestCase
             'cnic' => '35202-8492019-3',
         ]);
 
-        $response->assertRedirect('/customers/1');
+        $response->assertRedirect('/customers');
         $response->assertSessionHas('success');
     }
 }

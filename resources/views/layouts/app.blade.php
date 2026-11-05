@@ -95,15 +95,31 @@
 
             <!-- Flash Session Alerts (if any) -->
             @if(session('success'))
-                <div class="px-4 sm:px-8 pt-6">
-                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-xs animate-fade-in">
+                <div class="px-4 sm:px-8 pt-4">
+                    <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-xs animate-fade-in">
                         <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0 text-sm">
                                 <i class="fa-solid fa-check"></i>
                             </span>
-                            <p class="text-sm font-semibold">{{ session('success') }}</p>
+                            <p class="text-xs sm:text-sm font-semibold">{{ session('success') }}</p>
                         </div>
-                        <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 text-sm">
+                        <button type="button" onclick="this.closest('.animate-fade-in').parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 text-sm">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="px-4 sm:px-8 pt-4">
+                    <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between shadow-xs animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center shrink-0 text-sm">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            </span>
+                            <p class="text-xs sm:text-sm font-semibold">{{ session('error') }}</p>
+                        </div>
+                        <button type="button" onclick="this.closest('.animate-fade-in').parentElement.remove()" class="text-rose-600 hover:text-rose-900 text-sm">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
