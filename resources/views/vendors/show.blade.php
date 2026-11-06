@@ -76,7 +76,7 @@
                 <a 
                     href="{{ route('vendors.edit', $vendor->id) }}" 
                     class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-2 shadow-xs transition-colors">
-                    <i class="fa-solid fa-user-pen text-xs"></i>
+                    <i class="fa-solid fa-pen-to-square text-xs"></i>
                     <span>Edit</span>
                 </a>
             </div>

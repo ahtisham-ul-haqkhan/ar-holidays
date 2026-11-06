@@ -230,7 +230,7 @@
                                         href="{{ route('customers.edit', $customer->id) }}" 
                                         class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors shadow-xs" 
                                         title="Edit Customer">
-                                        <i class="fa-solid fa-user-pen text-xs"></i>
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
                                     </a>
                                     <form 
                                         action="{{ route('customers.destroy', $customer->id) }}" 
