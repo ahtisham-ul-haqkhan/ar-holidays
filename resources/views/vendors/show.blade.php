@@ -3,22 +3,53 @@
 @section('title', $vendor->name . ' · Airline / Vendor · AR Holidays')
 
 @section('content')
-<div class="space-y-6 w-full">
+<div class="space-y-4 w-full pb-8">
 
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs text-slate-500 font-medium">
-        <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
-            <i class="fa-solid fa-house text-[10px]"></i>
-            <span>Dashboard</span>
-        </a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <a href="{{ route('vendors.index') }}" class="hover:text-red-600 transition-colors">Vendors</a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <span class="text-slate-800 font-semibold">{{ $vendor->name }}</span>
-    </nav>
+    <!-- Top Action & Breadcrumb Bar (Compact) -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80">
+        <div>
+            <nav class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium mb-1">
+                <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-house text-[9px]"></i>
+                    <span>Dashboard</span>
+                </a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <a href="{{ route('vendors.index') }}" class="hover:text-red-600 transition-colors">Vendors</a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <span class="text-slate-800 font-semibold">{{ $vendor->name }}</span>
+            </nav>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2">
+                <span>{{ $vendor->name }}</span>
+                @if($vendor->status === 'Active')
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                    </span>
+                @else
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Inactive
+                    </span>
+                @endif
+            </h1>
+        </div>
 
-    <!-- Details Card (With Edit Button) -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+        <div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+            <a 
+                href="{{ route('vendors.index') }}" 
+                class="px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                <span>Back</span>
+            </a>
+            <a 
+                href="{{ route('vendors.edit', $vendor->id) }}" 
+                class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold tracking-wide uppercase flex items-center gap-1.5 shadow-md shadow-red-600/25 transition-all transform active:scale-95">
+                <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                <span>Edit Airline</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Details Card -->
+    <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-xs space-y-5">
         <div class="pb-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
                 <div class="flex items-center gap-2.5">

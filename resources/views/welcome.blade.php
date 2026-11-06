@@ -3,7 +3,7 @@
 @section('title', 'Aviation & Travel Operations Dashboard · AR Holidays')
 
 @section('content')
-<div class="space-y-8 w-full">
+<div class="space-y-5 sm:space-y-6 w-full">
 
     <!-- Top Hero Banner (AR Holidays Themed) -->
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-red-950 text-white p-6 sm:p-8 lg:p-10 shadow-xl border border-slate-800">

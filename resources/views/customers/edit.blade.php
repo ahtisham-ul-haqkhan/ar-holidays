@@ -3,35 +3,39 @@
 @section('title', 'Edit ' . ($customer->name ?? 'Customer') . ' · AR Holidays')
 
 @section('content')
-<div class="space-y-6 w-full">
+<div class="space-y-4 w-full pb-10">
 
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs text-slate-500 font-medium">
-        <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
-            <i class="fa-solid fa-house text-[10px]"></i>
-            <span>Dashboard</span>
+    <!-- Top Action & Breadcrumb Bar (Compact) -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80">
+        <div>
+            <nav class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium mb-1">
+                <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-house text-[9px]"></i>
+                    <span>Dashboard</span>
+                </a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <a href="{{ route('customers.index') }}" class="hover:text-red-600 transition-colors">Customers</a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <a href="{{ route('customers.show', $customer->id) }}" class="hover:text-red-600 transition-colors">{{ $customer->name ?? 'Customer' }}</a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <span class="text-slate-800 font-semibold">Edit</span>
+            </nav>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2">
+                <span>Edit Customer: {{ $customer->name ?? 'Customer' }}</span>
+            </h1>
+        </div>
+
+        <a 
+            href="{{ route('customers.index') }}" 
+            class="px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-colors flex items-center gap-1.5 self-start sm:self-auto">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>All Customers</span>
         </a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <a href="{{ route('customers.index') }}" class="hover:text-red-600 transition-colors">Customers</a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <a href="{{ route('customers.show', $customer->id) }}" class="hover:text-red-600 transition-colors">{{ $customer->name ?? 'Customer' }}</a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <span class="text-slate-800 font-semibold">Edit</span>
-    </nav>
-
-    <!-- Page Header -->
-    <div class="pb-2 border-b border-slate-200">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2.5">
-            <span>Edit Customer: {{ $customer->name ?? 'Customer' }}</span>
-        </h1>
-        <p class="text-xs sm:text-sm text-slate-500 mt-1">
-            Update customer identity records, passport, and contact credentials.
-        </p>
     </div>
 
     <!-- Error Summary (if any) -->
     @if ($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+        <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
             <div class="flex items-center gap-2 font-bold mb-1">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 <span>Please fix the following errors:</span>
@@ -45,18 +49,15 @@
     @endif
 
     <!-- Form Container -->
-    <form id="edit-customer-form" method="POST" action="{{ route('customers.update', $customer->id) }}" class="space-y-6">
+    <form id="edit-customer-form" method="POST" action="{{ route('customers.update', $customer->id) }}" class="space-y-4">
         @csrf
         @method('PUT')
 
         <!-- Card: Customer Details -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div class="pb-4 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Customer Profile Information</h2>
-                    <p class="text-xs text-slate-400">Personal, identity, and contact information.</p>
-                </div>
-                <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+        <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-xs space-y-5">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-xs font-bold text-slate-900 font-heading uppercase tracking-wider">Customer Profile Information</h2>
+                <span class="text-[10px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
                     * CNIC is required & unique
                 </span>
             </div>
@@ -257,7 +258,8 @@
     // 1. Direct CNIC Formatter
     function formatCnic(el) {
         if (!el) return;
-        let digits = el.value.replace(/\D/g, '').slice(0, 13);
+        const raw = el.value || '';
+        const digits = raw.replace(/\D/g, '').slice(0, 13);
         let formatted = '';
 
         if (digits.length > 5) {
@@ -271,7 +273,9 @@
             formatted = digits;
         }
 
-        el.value = formatted;
+        if (el.value !== formatted) {
+            el.value = formatted;
+        }
 
         const feedback = document.getElementById('cnic_feedback');
         if (feedback) {
@@ -291,6 +295,7 @@
             }
         }
     }
+    window.formatCnic = formatCnic;
 
     // Smart backspace handling for dashes
     function handleCnicKeydown(e, el) {
@@ -306,6 +311,7 @@
             }
         }
     }
+    window.handleCnicKeydown = handleCnicKeydown;
 
     // 2. Direct Name Validation
     function validateCustomerName(el) {
@@ -333,8 +339,13 @@
             return false;
         }
 
-        // Allow letters (including unicode), spaces, dots, hyphens, and apostrophes
-        const namePattern = /^[\p{L}\s.'-]+$/u;
+        let namePattern;
+        try {
+            namePattern = /^[\p{L}\s.'-]+$/u;
+        } catch (e) {
+            namePattern = /^[a-zA-Z\u0600-\u06FF\s.'-]+$/;
+        }
+
         if (!namePattern.test(val)) {
             el.classList.add('border-red-500', 'bg-red-50/20');
             el.classList.remove('border-amber-500', 'border-emerald-500', 'bg-amber-50/20', 'bg-emerald-50/10');
@@ -353,15 +364,29 @@
         }
         return true;
     }
+    window.validateCustomerName = validateCustomerName;
 
-    // 3. Form Submission Guard
+    // 3. Form Submission Guard & Listeners
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('edit-customer-form');
         const nameInput = document.getElementById('customer_name');
         const cnicInput = document.getElementById('customer_cnic');
 
-        if (cnicInput && cnicInput.value) {
+        if (cnicInput) {
             formatCnic(cnicInput);
+            ['input', 'keyup', 'paste', 'change'].forEach(evt => {
+                cnicInput.addEventListener(evt, function () {
+                    formatCnic(this);
+                });
+            });
+        }
+
+        if (nameInput) {
+            ['input', 'keyup', 'blur'].forEach(evt => {
+                nameInput.addEventListener(evt, function () {
+                    validateCustomerName(this);
+                });
+            });
         }
 
         if (form) {

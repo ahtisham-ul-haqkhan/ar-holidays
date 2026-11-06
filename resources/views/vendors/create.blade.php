@@ -3,33 +3,37 @@
 @section('title', 'Add New Airline / Vendor · AR Holidays')
 
 @section('content')
-<div class="space-y-6 w-full">
+<div class="space-y-4 w-full pb-10">
 
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs text-slate-500 font-medium">
-        <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
-            <i class="fa-solid fa-house text-[10px]"></i>
-            <span>Dashboard</span>
+    <!-- Top Action & Breadcrumb Bar (Compact) -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80">
+        <div>
+            <nav class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium mb-1">
+                <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-house text-[9px]"></i>
+                    <span>Dashboard</span>
+                </a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <a href="{{ route('vendors.index') }}" class="hover:text-red-600 transition-colors">Vendors</a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <span class="text-slate-800 font-semibold">New Airline / Vendor</span>
+            </nav>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight font-heading">
+                Register New Airline / Vendor
+            </h1>
+        </div>
+
+        <a 
+            href="{{ route('vendors.index') }}" 
+            class="px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-colors flex items-center gap-1.5 self-start sm:self-auto">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>All Vendors</span>
         </a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <a href="{{ route('vendors.index') }}" class="hover:text-red-600 transition-colors">Vendors</a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <span class="text-slate-800 font-semibold">New Airline / Vendor</span>
-    </nav>
-
-    <!-- Page Header -->
-    <div class="pb-2 border-b border-slate-200">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Register New Airline / Vendor
-        </h1>
-        <p class="text-xs sm:text-sm text-slate-500 mt-1">
-            Add partner airline carriers such as PIA, Airblue, AirSial, Emirates, or FlyDubai.
-        </p>
     </div>
 
     <!-- Error Summary (if any) -->
     @if ($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+        <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
             <div class="flex items-center gap-2 font-bold mb-1">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 <span>Please fix the following errors:</span>
@@ -43,16 +47,17 @@
     @endif
 
     <!-- Form Container -->
-    <form id="create-vendor-form" method="POST" action="{{ route('vendors.store') }}" class="space-y-6">
+    <form id="create-vendor-form" method="POST" action="{{ route('vendors.store') }}" class="space-y-4">
         @csrf
 
         <!-- Card: Airline / Vendor Details -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div class="pb-4 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider">Airline / Vendor Information</h2>
-                    <p class="text-xs text-slate-400">Specify airline carrier name and operational status.</p>
-                </div>
+        <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-xs space-y-5">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-xs font-bold text-slate-900 font-heading uppercase tracking-wider">Airline / Vendor Information</h2>
+                <span class="text-[10px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                    * Name is required & unique
+                </span>
+            </div>
                 <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
                     * Name is required & unique
                 </span>

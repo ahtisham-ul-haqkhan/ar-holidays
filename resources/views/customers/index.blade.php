@@ -3,36 +3,31 @@
 @section('title', 'Customers Directory · AR Holidays')
 
 @section('content')
-<div class="space-y-6 w-full">
+<div class="space-y-4 w-full pb-8">
 
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs text-slate-500 font-medium">
-        <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
-            <i class="fa-solid fa-house text-[10px]"></i>
-            <span>Dashboard</span>
-        </a>
-        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <span class="text-slate-800 font-semibold">Customers</span>
-    </nav>
-
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+    <!-- Top Action & Breadcrumb Bar (Compact) -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2.5">
+            <nav class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium mb-1">
+                <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-house text-[9px]"></i>
+                    <span>Dashboard</span>
+                </a>
+                <i class="fa-solid fa-chevron-right text-[8px] text-slate-300"></i>
+                <span class="text-slate-800 font-semibold">Customers</span>
+            </nav>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2">
                 <span>Customer Directory</span>
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
-                    {{ $customers->total() }} Customers
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
+                    {{ $customers->total() }} Records
                 </span>
             </h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                Manage registered customer profiles, CNIC identity records, and passport credentials.
-            </p>
         </div>
 
-        <div class="flex items-center gap-2.5 shrink-0">
+        <div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
             <a 
                 href="{{ route('customers.create') }}" 
-                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold tracking-wide uppercase flex items-center gap-2 shadow-md shadow-red-600/25 hover:shadow-lg transition-all transform active:scale-95">
+                class="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs font-bold tracking-wide uppercase flex items-center gap-2 shadow-md shadow-red-600/25 hover:shadow-lg transition-all transform active:scale-95">
                 <i class="fa-solid fa-user-plus text-xs"></i>
                 <span>Add New Customer</span>
             </a>
