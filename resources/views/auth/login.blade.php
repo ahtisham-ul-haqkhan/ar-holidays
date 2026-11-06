@@ -10,48 +10,8 @@
     <!-- Brand Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/ar-holidays-icon.svg') }}">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome 6 Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                        heading: ['"Outfit"', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#fef2f2',
-                            100: '#fee2e2',
-                            200: '#fecaca',
-                            300: '#fca5a5',
-                            400: '#f87171',
-                            500: '#ef4444',
-                            600: '#e5202e', // Official AR Holidays Red
-                            700: '#b91c1c',
-                            800: '#991b1b',
-                            900: '#7f1d1d',
-                            950: '#450a0a',
-                        }
-                    },
-                    boxShadow: {
-                        'glow-red': '0 0 35px -5px rgba(229, 32, 46, 0.45)',
-                        'glow-subtle': '0 0 50px -10px rgba(229, 32, 46, 0.25)',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Local Offline Compiled Assets (Tailwind CSS & FontAwesome) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         body {
@@ -70,7 +30,7 @@
         
         <!-- Left Side: Grand Travel Wallpaper with Subtle Dark Layer (lg:col-span-7 xl:col-span-8) -->
         <div class="hidden lg:flex lg:col-span-7 xl:col-span-8 p-10 xl:p-16 flex-col justify-between relative overflow-hidden min-h-screen bg-slate-950 bg-cover bg-center"
-             style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop');">
+             style="background-image: url('{{ asset('images/login-travel-bg.jpg') }}');">
             
             <!-- Subtle Black Translucent Layer Overlay -->
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/65 to-slate-950/45 backdrop-blur-[1px] pointer-events-none"></div>
