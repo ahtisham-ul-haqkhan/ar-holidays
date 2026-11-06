@@ -6,6 +6,7 @@ use App\Models\Customer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CustomerService
@@ -127,16 +128,22 @@ class CustomerService
             $data['name'] = trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
         }
 
-        if (empty($data['cnic'])) {
-            $data['cnic'] = '35202-' . rand(1000000, 9999999) . '-' . rand(1, 9);
-        }
-
-        $uniqueRule = 'required|string|max:50|unique:customers,cnic' . ($customerId ? ',' . $customerId : '');
-
         return Validator::make($data, [
             'title' => 'nullable|string|max:50',
-            'name' => 'nullable|string|max:255',
-            'cnic' => $uniqueRule,
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:100',
+                'regex:/^[\pL\s\.\'-]+$/u',
+            ],
+            'cnic' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[0-9]{5}-[0-9]{7}-[0-9]{1}$/',
+                Rule::unique('customers', 'cnic')->ignore($customerId),
+            ],
             'dob' => 'nullable|date',
             'gender' => 'nullable|string|max:20',
             'passport' => 'nullable|string|max:50',
@@ -144,6 +151,15 @@ class CustomerService
             'number' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:1000',
             'status' => 'nullable|string|in:Active,Inactive',
+        ], [
+            'name.required' => 'Customer full name is required.',
+            'name.string' => 'Customer name must be a valid text string.',
+            'name.min' => 'Customer name must be at least 3 characters long.',
+            'name.max' => 'Customer name may not be greater than 100 characters.',
+            'name.regex' => 'Customer name may only contain letters, spaces, dots, and hyphens.',
+            'cnic.required' => 'CNIC number is required.',
+            'cnic.unique' => 'This CNIC number is already registered to another customer.',
+            'cnic.regex' => 'CNIC must follow the valid Pakistani format: 12345-1234567-1.',
         ])->validate();
     }
 
