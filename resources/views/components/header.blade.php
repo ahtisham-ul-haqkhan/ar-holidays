@@ -43,7 +43,7 @@
                 <i class="fa-solid fa-plane-departure text-[11px] {{ str_starts_with($currentRoute ?? '', 'vendors') ? 'text-red-600' : 'text-slate-400' }}"></i>
                 <span>Airlines</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold {{ str_starts_with($currentRoute ?? '', 'vendors') ? 'bg-red-600 text-white' : 'bg-slate-200/80 text-slate-700' }}">
-                    {{ \App\Models\Vendor::count() }}
+                    {{ \Illuminate\Support\Facades\Cache::remember('vendors_count_badge', 60, fn() => \App\Models\Vendor::count()) }}
                 </span>
             </a>
 

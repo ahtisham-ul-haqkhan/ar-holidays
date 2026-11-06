@@ -82,7 +82,7 @@
                         <span>All Customers</span>
                     </div>
                     <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ str_starts_with($currentRoute, 'customers.index') ? 'bg-white/25 text-white' : 'bg-slate-800 text-slate-300' }}">
-                        {{ \App\Models\Customer::count() }}
+                        {{ \Illuminate\Support\Facades\Cache::remember('customers_count_badge', 60, fn() => \App\Models\Customer::count()) }}
                     </span>
                 </a>
 
@@ -97,7 +97,7 @@
                         <span>Airlines / Vendors</span>
                     </div>
                     <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ str_starts_with($currentRoute, 'vendors') ? 'bg-white/25 text-white' : 'bg-slate-800 text-slate-300' }}">
-                        {{ \App\Models\Vendor::count() }}
+                        {{ \Illuminate\Support\Facades\Cache::remember('vendors_count_badge', 60, fn() => \App\Models\Vendor::count()) }}
                     </span>
                 </a>
 

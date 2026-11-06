@@ -10,6 +10,12 @@
     <!-- Brand Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/ar-holidays-icon.svg') }}">
 
+    <!-- Ultra-fast DNS Prefetching -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -155,6 +161,8 @@
             }
         }
     </script>
+    <!-- Cheetah Instant Navigation Engine -->
+    <script src="{{ asset('js/instant-navigate.js') }}"></script>
 </body>
 </html>
 
