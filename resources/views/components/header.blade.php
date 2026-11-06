@@ -85,24 +85,37 @@
         </nav>
     </div>
 
-    <!-- Right: Admin Profile -->
-    <div class="flex items-center gap-3 shrink-0 ml-4">
-        <div class="relative">
-            <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80" 
-                alt="Admin" 
-                class="w-9 h-9 rounded-xl object-cover ring-2 ring-red-500/20 shadow-xs"
-            >
-            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+    <!-- Right: Admin Profile & Logout -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-4">
+        <div class="flex items-center gap-2.5 px-2 py-1 rounded-2xl hover:bg-slate-50 transition-colors">
+            <!-- <div class="relative">
+                <img 
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80" 
+                    alt="Admin" 
+                    class="w-9 h-9 rounded-xl object-cover ring-2 ring-red-500/20 shadow-xs"
+                >
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+            </div> -->
+            <div class="hidden sm:flex flex-col text-left">
+                <span class="text-xs font-bold text-slate-900 leading-none">
+                    {{ auth()->user()->name ?? 'Rehman Admin' }}
+                </span>
+                <span class="text-[10px] text-slate-400 font-medium mt-1 truncate max-w-[130px]">
+                    {{ auth()->user()->email ?? 'rahman@artravels.com' }}
+                </span>
+            </div>
         </div>
-        <div class="hidden sm:flex flex-col text-left">
-            <span class="text-xs font-bold text-slate-900 leading-none">
-                Rehman Admin
-            </span>
-            <span class="text-[10px] text-slate-400 font-medium mt-1">
-                AR Holidays
-            </span>
-        </div>
+
+        <!-- Logout Form -->
+        <form method="POST" action="{{ route('logout') }}" class="inline-flex">
+            @csrf
+            <button 
+                type="submit" 
+                title="Sign Out" 
+                class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-red-600 border border-slate-200/80 hover:border-red-200 flex items-center justify-center transition-all duration-200 shadow-xs group">
+                <i class="fa-solid fa-arrow-right-from-bracket text-xs transition-transform group-hover:translate-x-0.5"></i>
+            </button>
+        </form>
     </div>
 
 </header>

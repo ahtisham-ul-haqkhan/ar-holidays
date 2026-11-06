@@ -16,9 +16,6 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('status')->default('Active');
             $table->softDeletes();
-            $table->string('name')->unique();
-            $table->string('status')->default('Active');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
