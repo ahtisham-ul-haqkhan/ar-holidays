@@ -22,10 +22,7 @@
     <!-- Page Header -->
     <div class="pb-2 border-b border-slate-200">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading flex items-center gap-2.5">
-            <span>Edit Customer: {{ $customer->name ?? 'Customer #' . $customer->id }}</span>
-            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                ID #{{ $customer->id }}
-            </span>
+            <span>Edit Customer: {{ $customer->name ?? 'Customer' }}</span>
         </h1>
         <p class="text-xs sm:text-sm text-slate-500 mt-1">
             Update customer identity records, passport, and contact credentials.

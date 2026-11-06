@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Travel Dashboard · AR Holidays')
+@section('title', 'Aviation & Travel Operations Dashboard · AR Holidays')
 
 @section('content')
 <div class="space-y-8 w-full">
@@ -18,18 +18,20 @@
             <div class="space-y-3 max-w-2xl">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-semibold">
                     <i class="fa-solid fa-plane-departure text-[11px]"></i>
-                    <span>AR HOLIDAYS · TRAVEL OPERATIONS DESK</span>
+                    <span>AR HOLIDAYS · TRAVEL & AVIATION ERP</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-heading">
-                    Welcome Back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-red-400">Rehman Admin</span> 👋
+                    Welcome Back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-red-400">{{ auth()->user()->name ?? 'Rehman Admin' }}</span> 👋
                 </h1>
                 <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-light">
-                    Surf Your Dream With Us. Today you have <strong class="text-white font-semibold">18 flights in transit</strong>, <strong class="text-white font-semibold">5 visa approvals pending</strong>, and <strong class="text-red-400 font-semibold">14 new customer inquiries</strong> waiting.
+                    Surf Your Dream With Us. Real-time overview of <strong class="text-white font-semibold">airline ticket sales</strong>, <strong class="text-amber-400 font-semibold">vendor payables</strong>, and <strong class="text-emerald-400 font-semibold">visa desk approvals</strong>.
                 </p>
                 <div class="pt-2 flex flex-wrap items-center gap-3 text-xs text-slate-300">
                     <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-400"></i> Amadeus & Sabre GDS Connected</span>
                     <span class="text-slate-600">|</span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-400"></i> Local Time: {{ now()->format('h:i A (T)') }}</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-building-columns text-amber-400"></i> 11 Airline Vendor Accounts</span>
+                    <span class="text-slate-600">|</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-slate-400"></i> {{ now()->format('d M Y, h:i A') }}</span>
                 </div>
             </div>
 
@@ -42,22 +44,22 @@
                     <span>New Customer</span>
                 </a>
                 <a 
-                    href="{{ route('customers.index') }}" 
+                    href="{{ route('vendors.index') }}" 
                     class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-white font-medium text-sm transition-all">
-                    <i class="fa-solid fa-users text-xs text-red-400"></i>
-                    <span>Manage Customers</span>
+                    <i class="fa-solid fa-plane-departure text-xs text-red-400"></i>
+                    <span>Vendor Airlines</span>
                 </a>
                 <a 
-                    href="#flight-search" 
+                    href="#vendor-payables" 
                     class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm backdrop-blur-sm border border-white/10 transition-all">
-                    <i class="fa-solid fa-plane text-xs"></i>
-                    <span>Book Flight</span>
+                    <i class="fa-solid fa-receipt text-xs"></i>
+                    <span>Vendor Payables</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- 4 Key Performance Metrics (KPI Cards) -->
+    <!-- 4 Core Business KPIs -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         @foreach($kpis as $kpi)
             <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
@@ -70,11 +72,19 @@
                 
                 <div class="mt-4">
                     <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">{{ $kpi['value'] }}</h3>
-                    <div class="mt-2 flex items-center gap-2">
-                        <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
-                            <i class="fa-solid fa-arrow-trend-up text-[10px]"></i>
-                            {{ $kpi['change'] }}
-                        </span>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5">{{ $kpi['sub_value'] }}</p>
+                    <div class="mt-3 flex items-center gap-2">
+                        @if($kpi['trend'] === 'warning')
+                            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                <i class="fa-solid fa-clock text-[9px]"></i>
+                                {{ $kpi['change'] }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+                                <i class="fa-solid fa-arrow-trend-up text-[9px]"></i>
+                                {{ $kpi['change'] }}
+                            </span>
+                        @endif
                         <span class="text-xs text-slate-400">{{ $kpi['period'] }}</span>
                     </div>
                 </div>
@@ -82,169 +92,141 @@
         @endforeach
     </div>
 
-    <!-- Flight & Holiday Quick Search Widget (Sabre Style) -->
-    <div id="flight-search" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+    <!-- Monthly Ticket Sales Graph (ApexCharts) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
             <div>
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-red-600"></span>
-                    <h2 class="text-lg font-bold text-slate-900 font-heading">Flight & Tour Instant Search Engine</h2>
+                    <span class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></span>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900 font-heading">
+                        Monthly Ticket Sales & Revenue Trend
+                    </h2>
                 </div>
-                <p class="text-xs text-slate-500 mt-1">Live GDS airline seat availability, group tour tariffs and hotel inventory.</p>
+                <p class="text-xs text-slate-500 mt-1">
+                    Month-by-month flight ticket booking volume and revenue generated across domestic and international routes.
+                </p>
             </div>
-            
-            <!-- Trip Type Toggle -->
-            <div class="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-semibold text-slate-600">
-                <button type="button" class="px-3.5 py-1.5 rounded-lg bg-red-600 text-white shadow-xs">Round Trip</button>
-                <button type="button" class="px-3.5 py-1.5 rounded-lg hover:text-slate-900 transition-colors">One Way</button>
-                <button type="button" class="px-3.5 py-1.5 rounded-lg hover:text-slate-900 transition-colors">Multi City</button>
-                <button type="button" class="px-3.5 py-1.5 rounded-lg hover:text-slate-900 transition-colors">Holiday Tour</button>
+
+            <!-- Quick Chart Indicators -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                    <span class="font-bold text-slate-700">Tickets Sold</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-800"></span>
+                    <span class="font-bold text-slate-700">Revenue (PKR M)</span>
+                </div>
             </div>
         </div>
 
-        <!-- Search Form Row -->
-        <form onsubmit="event.preventDefault(); alert('Searching live GDS flight routes for AR Holidays travelers...');" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            
-            <!-- Origin -->
-            <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">From (Origin)</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
-                        <i class="fa-solid fa-plane-departure text-xs text-red-500"></i>
-                    </span>
-                    <input 
-                        type="text" 
-                        value="Lahore (LHE)" 
-                        class="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-semibold text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
-            </div>
+        <!-- ApexChart Container -->
+        <div class="w-full">
+            <div id="ticket-sales-chart" class="w-full h-80"></div>
+        </div>
 
-            <!-- Destination -->
-            <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">To (Destination)</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
-                        <i class="fa-solid fa-plane-arrival text-xs text-red-500"></i>
-                    </span>
-                    <input 
-                        type="text" 
-                        value="Dubai, UAE (DXB)" 
-                        class="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-semibold text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
+        <!-- Quick Graph Summary Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-100 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                <p class="text-slate-400 font-medium">Peak Sales Month</p>
+                <p class="text-base font-extrabold text-slate-900 mt-0.5">December (1,485 Tickets)</p>
             </div>
-
-            <!-- Departure Date -->
-            <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Departure Date</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
-                        <i class="fa-regular fa-calendar text-xs"></i>
-                    </span>
-                    <input 
-                        type="date" 
-                        value="{{ date('Y-m-d', strtotime('+7 days')) }}" 
-                        class="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-semibold text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
-                    >
-                </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                <p class="text-slate-400 font-medium">Total Annual Volume</p>
+                <p class="text-base font-extrabold text-red-600 mt-0.5">9,050 Tickets</p>
             </div>
-
-            <!-- Passengers & Class -->
-            <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Travelers & Class</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
-                        <i class="fa-solid fa-user-group text-xs"></i>
-                    </span>
-                    <select class="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-slate-100/60 focus:bg-white text-xs font-semibold text-slate-900 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-                        <option>2 Adults · Economy</option>
-                        <option>1 Adult · Business Class</option>
-                        <option>2 Adults, 2 Kids · Family</option>
-                        <option>1 Adult · First Class</option>
-                    </select>
-                </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                <p class="text-slate-400 font-medium">Annual Gross Billing</p>
+                <p class="text-base font-extrabold text-slate-900 mt-0.5">PKR 364.5 Million</p>
             </div>
-
-            <!-- Submit Button -->
-            <div class="space-y-1.5 flex flex-col justify-end">
-                <button 
-                    type="submit" 
-                    class="w-full py-2.5 px-4 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md shadow-red-600/20 hover:shadow-lg hover:shadow-red-600/30 transition-all flex items-center justify-center gap-2 transform active:scale-95">
-                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                    <span>Search Fares</span>
-                </button>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                <p class="text-slate-400 font-medium">Monthly Average</p>
+                <p class="text-base font-extrabold text-emerald-600 mt-0.5">754 Tickets / Month</p>
             </div>
+        </div>
 
-        </form>
     </div>
 
-    <!-- Main Two Column Content Area -->
+    <!-- Main Section: Vendor Payables & Visa Sales Reports -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- Left Column: Recent Bookings Table & Customer Activity (8 Cols) -->
-        <div class="lg:col-span-8 space-y-8">
+        <!-- Left Side: Airline Vendor Payables Ledger (8 Columns) -->
+        <div id="vendor-payables" class="lg:col-span-8 space-y-8">
             
-            <!-- Recent Bookings Table -->
+            <!-- Vendor Payables Table -->
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-base font-bold text-slate-900 font-heading">Recent Flight & Tour Bookings</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Real-time GDS transactions and holiday package reservations.</p>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </span>
+                            <div>
+                                <h2 class="text-base font-bold text-slate-900 font-heading">
+                                    Airline Vendors & Payables Ledger
+                                </h2>
+                                <p class="text-xs text-slate-500">
+                                    Total amount due to partner airline carriers (Kitnay paise vendor ko dene hain).
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <a href="{{ route('customers.index') }}" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
-                        View All
-                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                    </a>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                            Total Due: PKR 24.6M
+                        </span>
+                        <a href="{{ route('vendors.index') }}" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
+                            Vendors Directory <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Table Content -->
+                <!-- Payables Table Content -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-50/80 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">
+                        <thead class="bg-slate-50 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
                             <tr>
-                                <th class="py-3.5 px-6">Traveler</th>
-                                <th class="py-3.5 px-4">Flight / Tour</th>
-                                <th class="py-3.5 px-4">Departure</th>
-                                <th class="py-3.5 px-4">Amount</th>
-                                <th class="py-3.5 px-4">Status</th>
-                                <th class="py-3.5 px-6 text-right">Action</th>
+                                <th class="py-3.5 px-6">Airline / Carrier</th>
+                                <th class="py-3.5 px-4 text-center">Tickets</th>
+                                <th class="py-3.5 px-4">Gross Billed</th>
+                                <th class="py-3.5 px-4">Amount Paid</th>
+                                <th class="py-3.5 px-4 font-black text-red-600">Payable Due</th>
+                                <th class="py-3.5 px-4">Settlement Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
-                            @foreach($recentBookings as $bkg)
-                                <tr class="hover:bg-slate-50/60 transition-colors">
+                            @foreach($vendorPayables as $vp)
+                                <tr class="hover:bg-slate-50/70 transition-colors">
                                     <td class="py-4 px-6">
-                                        <div class="flex items-center gap-3">
-                                            <img src="{{ $bkg['avatar'] }}" alt="{{ $bkg['customer'] }}" class="w-9 h-9 rounded-xl object-cover ring-1 ring-slate-200 shrink-0">
+                                        <div class="flex items-center gap-2.5">
+                                            <span class="w-8 h-8 rounded-lg {{ $vp['logo_badge'] }} flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                                                {{ $vp['code'] }}
+                                            </span>
                                             <div>
-                                                <p class="font-bold text-slate-900 text-sm leading-tight">{{ $bkg['customer'] }}</p>
-                                                <p class="text-[11px] text-slate-400 font-mono">PNR: {{ $bkg['pnr'] }}</p>
+                                                <p class="font-bold text-slate-900 text-xs">{{ $vp['vendor'] }}</p>
+                                                <p class="text-[10px] text-slate-400">Due: {{ $vp['due_date'] }}</p>
                                             </div>
                                         </div>
                                     </td>
+                                    <td class="py-4 px-4 text-center font-mono font-bold text-slate-800">
+                                        {{ $vp['tickets_issued'] }}
+                                    </td>
+                                    <td class="py-4 px-4 text-slate-600">
+                                        {{ $vp['gross_amount'] }}
+                                    </td>
+                                    <td class="py-4 px-4 text-emerald-700 font-medium">
+                                        {{ $vp['paid_amount'] }}
+                                    </td>
                                     <td class="py-4 px-4">
-                                        <div class="space-y-0.5">
-                                            <p class="font-semibold text-slate-800">{{ $bkg['destination'] }}</p>
-                                            <p class="text-[11px] text-slate-400">{{ $bkg['flight'] }}</p>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-4 whitespace-nowrap text-slate-600">
-                                        <i class="fa-regular fa-calendar-check text-[11px] mr-1 text-slate-400"></i>
-                                        {{ $bkg['date'] }}
-                                    </td>
-                                    <td class="py-4 px-4 font-bold text-slate-900">
-                                        {{ $bkg['amount'] }}
-                                    </td>
-                                    <td class="py-4 px-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border {{ $bkg['badge'] }}">
-                                            {{ $bkg['status'] }}
+                                        <span class="font-extrabold text-slate-900 text-xs {{ $vp['payable_due'] === 'PKR 0' ? 'text-emerald-600 font-bold' : 'text-red-600' }}">
+                                            {{ $vp['payable_due'] }}
                                         </span>
                                     </td>
-                                    <td class="py-4 px-6 text-right whitespace-nowrap">
-                                        <a href="{{ route('customers.show', 1) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 transition-colors" title="View Dossier">
-                                            <i class="fa-solid fa-eye text-xs"></i>
-                                        </a>
+                                    <td class="py-4 px-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border {{ $vp['status_color'] }}">
+                                            {{ $vp['status'] }}
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -252,174 +234,212 @@
                     </table>
                 </div>
 
-                <div class="p-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                    <span>Showing recent 5 bookings from Sabre GDS</span>
-                    <span class="text-emerald-600 font-semibold flex items-center gap-1">
-                        <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Live Sync Active
-                    </span>
+                <div class="p-4 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>BSP & Airline GDS direct settlement billing cycles</span>
+                    <span class="font-bold text-slate-700">Next Clearance: 15 Nov 2026</span>
                 </div>
             </div>
 
-            <!-- Customer Management Highlight Box -->
-            <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 shadow-xl relative overflow-hidden">
-                <div class="absolute -right-12 -top-12 w-64 h-64 bg-red-600/10 rounded-full blur-2xl pointer-events-none"></div>
-
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div class="space-y-2 max-w-lg">
-                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-red-500/20 text-red-400 text-[11px] font-bold">
-                            <i class="fa-solid fa-id-card"></i>
-                            <span>TRAVELER DIRECTORY & PASSPORT REPOSITORY</span>
-                        </div>
-                        <h3 class="text-xl font-bold font-heading">Manage Your Clients with High-Precision Profiling</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Organize passport validity dates, visas, frequent flyer points, medical meal preferences, and past travel itineraries in one sleek static interface.
-                        </p>
+            <!-- Recent Issued Flight Tickets Table -->
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 font-heading">Recent Flight Tickets Issued</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Live issued PNR tickets synced with Sabre & Amadeus.</p>
                     </div>
+                    <a href="{{ route('customers.index') }}" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
+                        View All Tickets <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
 
-                    <div class="flex flex-col sm:flex-row gap-3 shrink-0">
-                        <a href="{{ route('customers.create') }}" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 text-white font-semibold text-xs tracking-wide uppercase hover:from-red-500 hover:to-rose-600 shadow-lg shadow-red-600/30 text-center transition-all">
-                            + Add New Client
-                        </a>
-                        <a href="{{ route('customers.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold text-xs tracking-wide uppercase text-center transition-all">
-                            View Customer List
-                        </a>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="py-3.5 px-6">Traveler</th>
+                                <th class="py-3.5 px-4">Carrier & Route</th>
+                                <th class="py-3.5 px-4">Date</th>
+                                <th class="py-3.5 px-4">Fare Amount</th>
+                                <th class="py-3.5 px-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                            @foreach($recentBookings as $bkg)
+                                <tr class="hover:bg-slate-50/70 transition-colors">
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <img src="{{ $bkg['avatar'] }}" alt="{{ $bkg['customer'] }}" class="w-8 h-8 rounded-xl object-cover ring-1 ring-slate-200 shrink-0">
+                                            <div>
+                                                <p class="font-bold text-slate-900 text-xs">{{ $bkg['customer'] }}</p>
+                                                <p class="text-[10px] text-slate-400 font-mono">PNR: {{ $bkg['pnr'] }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div>
+                                            <p class="font-semibold text-slate-800">{{ $bkg['destination'] }}</p>
+                                            <p class="text-[10px] text-slate-400">{{ $bkg['flight'] }}</p>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 text-slate-600 whitespace-nowrap">
+                                        {{ $bkg['date'] }}
+                                    </td>
+                                    <td class="py-4 px-4 font-bold text-slate-900">
+                                        {{ $bkg['amount'] }}
+                                    </td>
+                                    <td class="py-4 px-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border {{ $bkg['badge'] }}">
+                                            {{ $bkg['status'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
 
-        <!-- Right Column: Trending Holiday Packages & Customer Quick Bar (4 Cols) -->
+        <!-- Right Side: Visa Sales & Category Performance Report (4 Columns) -->
         <div class="lg:col-span-4 space-y-8">
             
-            <!-- Quick Customer Spotlight Card -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
-                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading flex items-center gap-2">
-                        <i class="fa-solid fa-crown text-amber-500"></i> VIP Travelers
-                    </h3>
-                    <a href="{{ route('customers.index') }}" class="text-xs font-semibold text-red-600 hover:underline">View All</a>
-                </div>
-
-                <div class="mt-4 space-y-3">
-                    <a href="{{ route('customers.show', 1) }}" class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200 group">
-                        <div class="flex items-center gap-3">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Hamza" class="w-10 h-10 rounded-xl object-cover ring-2 ring-amber-500/30">
-                            <div>
-                                <p class="text-xs font-bold text-slate-900 group-hover:text-red-600 transition-colors">Muhammad Hamza</p>
-                                <p class="text-[11px] text-slate-400">14 Trips · Dubai (DXB)</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">Platinum</span>
-                    </a>
-
-                    <a href="{{ route('customers.show', 2) }}" class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200 group">
-                        <div class="flex items-center gap-3">
-                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80" alt="Fatima" class="w-10 h-10 rounded-xl object-cover ring-2 ring-red-500/30">
-                            <div>
-                                <p class="text-xs font-bold text-slate-900 group-hover:text-red-600 transition-colors">Fatima Zahra</p>
-                                <p class="text-[11px] text-slate-400">8 Trips · Baku (GYD)</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">Gold</span>
-                    </a>
-
-                    <a href="{{ route('customers.show', 3) }}" class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200 group">
-                        <div class="flex items-center gap-3">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Bilal" class="w-10 h-10 rounded-xl object-cover ring-2 ring-amber-500/30">
-                            <div>
-                                <p class="text-xs font-bold text-slate-900 group-hover:text-red-600 transition-colors">Bilal Siddiqui</p>
-                                <p class="text-[11px] text-slate-400">19 Trips · London (LHR)</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">Platinum</span>
-                    </a>
-                </div>
-
-                <div class="mt-4 pt-4 border-t border-slate-100">
-                    <a href="{{ route('customers.create') }}" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-2 transition-colors">
-                        <i class="fa-solid fa-plus text-[10px] text-red-600"></i>
-                        <span>Register New Traveler</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Top Trending Holiday Packages (Curated for AR Holidays) -->
-            <div id="holiday-packages" class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+            <!-- Visa Sales Report Card -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading">Trending Holiday Packages</h3>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Top seller tours with high commission rates.</p>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
+                                <i class="fa-solid fa-passport"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading">
+                                    Visa Sales Report
+                                </h3>
+                                <p class="text-[10px] text-slate-400">Total Visas Processed & Sold</p>
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-lg">2026/27</span>
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl">
+                        842 Visas
+                    </span>
                 </div>
 
-                <div class="space-y-4">
-                    @foreach($packages as $pkg)
-                        <div class="p-3.5 rounded-2xl border border-slate-200/80 hover:border-red-300 hover:shadow-md transition-all duration-200 group bg-slate-50/50 hover:bg-white">
-                            <div class="relative h-32 rounded-xl overflow-hidden mb-3">
-                                <img src="{{ $pkg['image'] }}" alt="{{ $pkg['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                <span class="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-950/80 text-white backdrop-blur-xs">
-                                    {{ $pkg['badge'] }}
-                                </span>
-                                <span class="absolute bottom-2.5 right-2.5 text-xs font-extrabold px-2 py-0.5 rounded-md bg-red-600 text-white shadow-md">
-                                    {{ $pkg['price'] }} <span class="text-[10px] font-normal">/ pax</span>
+                <!-- Visa Breakdown List -->
+                <div class="space-y-3.5">
+                    @foreach($visaSalesReport as $visa)
+                        <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-red-200 hover:shadow-xs transition-all space-y-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg {{ $visa['color'] }} flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                                        <i class="fa-solid fa-{{ $visa['icon'] }}"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-900 leading-tight">
+                                            {{ $visa['category'] }}
+                                        </h4>
+                                        <p class="text-[10px] text-slate-400">{{ $visa['destination'] }}</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-xs font-extrabold text-slate-900 shrink-0">
+                                    {{ $visa['visas_sold'] }} Sold
                                 </span>
                             </div>
 
-                            <h4 class="text-xs font-bold text-slate-900 leading-snug group-hover:text-red-600 transition-colors">
-                                {{ $pkg['name'] }}
-                            </h4>
-                            
-                            <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
-                                <span><i class="fa-regular fa-clock text-slate-400 mr-1"></i> {{ $pkg['days'] }}</span>
-                                <span class="text-amber-500 font-semibold"><i class="fa-solid fa-star text-[10px]"></i> {{ $pkg['rating'] }}</span>
-                            </div>
-
-                            <div class="mt-3 pt-3 border-t border-slate-200/60 flex items-center justify-between">
-                                <span class="text-[10px] text-slate-400 line-through">Reg: {{ $pkg['original_price'] }}</span>
-                                <button type="button" onclick="alert('Package details for {{ $pkg['name'] }} opened.')" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
-                                    Book Tour <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                                </button>
+                            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200/60 text-[10px]">
+                                <div>
+                                    <span class="text-slate-400">Revenue</span>
+                                    <p class="font-bold text-slate-800">{{ $visa['total_revenue'] }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400">Approval</span>
+                                    <p class="font-bold text-emerald-600">{{ $visa['approval_rate'] }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400">Avg Time</span>
+                                    <p class="font-bold text-slate-800">{{ $visa['avg_processing'] }}</p>
+                                </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
+
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span class="text-slate-500 font-medium">Total Visa Revenue:</span>
+                    <span class="font-extrabold text-slate-900">PKR 52.4 Million</span>
+                </div>
             </div>
 
-            <!-- Visa Desk Status Pill -->
-            <div id="visa-desk" class="bg-gradient-to-br from-red-600 to-rose-700 rounded-3xl p-6 text-white shadow-xl shadow-red-600/20">
-                <div class="flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white text-lg">
-                        <i class="fa-solid fa-passport"></i>
-                    </span>
+            <!-- Airline Ticket Market Share Widget -->
+            <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-black rounded-3xl p-6 text-white shadow-xl border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-red-500 text-sm"></i>
+                        <h4 class="text-xs font-bold uppercase tracking-wider font-heading">
+                            Airline Share Breakdown
+                        </h4>
+                    </div>
+                    <span class="text-[10px] font-semibold text-slate-400">3,485 Tickets</span>
+                </div>
+
+                <div class="space-y-3 text-xs">
                     <div>
-                        <h4 class="text-sm font-bold font-heading">Visa & Immigration Desk</h4>
-                        <p class="text-xs text-red-100">42 Visas in Process</p>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>PIA (National Carrier)</span>
+                            <span class="font-bold text-white">842 (24%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-emerald-500 h-full rounded-full" style="width: 24%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Airblue (Domestic & Gulf)</span>
+                            <span class="font-bold text-white">615 (18%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-blue-500 h-full rounded-full" style="width: 18%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Emirates (International)</span>
+                            <span class="font-bold text-white">590 (17%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-red-500 h-full rounded-full" style="width: 17%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Saudia (Umrah & Riyadh)</span>
+                            <span class="font-bold text-white">520 (15%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-amber-500 h-full rounded-full" style="width: 15%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>AirSial & Other Airlines</span>
+                            <span class="font-bold text-white">918 (26%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-purple-500 h-full rounded-full" style="width: 26%"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-4 space-y-2 text-xs">
-                    <div class="flex justify-between text-red-100">
-                        <span>UAE 2-Yr Multiple</span>
-                        <span class="font-bold text-white">98% Success</span>
-                    </div>
-                    <div class="w-full bg-black/20 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-white h-full rounded-full" style="width: 98%"></div>
-                    </div>
-
-                    <div class="flex justify-between text-red-100 pt-1">
-                        <span>Azerbaijan E-Visa</span>
-                        <span class="font-bold text-white">3 Hours Fast Track</span>
-                    </div>
-                    <div class="w-full bg-black/20 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-white h-full rounded-full" style="width: 100%"></div>
-                    </div>
+                <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>GDS Auto-Ticketing Desk</span>
+                    <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Synced
+                    </span>
                 </div>
-
-                <a href="{{ route('customers.index') }}" class="mt-4 block w-full py-2 bg-white text-red-700 text-xs font-bold text-center rounded-xl hover:bg-red-50 transition-colors">
-                    Check Passport / Visa Records
-                </a>
             </div>
 
         </div>
@@ -427,4 +447,152 @@
     </div>
 
 </div>
+
+<!-- ApexCharts CDN Script -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const months = @json($monthlyChart['months']);
+        const tickets = @json($monthlyChart['tickets']);
+        const revenue = @json($monthlyChart['revenue_millions']);
+
+        const options = {
+            series: [
+                {
+                    name: 'Tickets Sold',
+                    type: 'area',
+                    data: tickets
+                },
+                {
+                    name: 'Revenue (PKR M)',
+                    type: 'line',
+                    data: revenue
+                }
+            ],
+            chart: {
+                height: 320,
+                type: 'line',
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                },
+                fontFamily: 'Plus Jakarta Sans, sans-serif'
+            },
+            colors: ['#e5202e', '#0f172a'],
+            stroke: {
+                width: [2, 3],
+                curve: 'smooth'
+            },
+            fill: {
+                type: ['gradient', 'solid'],
+                gradient: {
+                    shade: 'light',
+                    type: 'vertical',
+                    shadeIntensity: 0.5,
+                    gradientToColors: ['#fee2e2'],
+                    inverseColors: false,
+                    opacityFrom: 0.5,
+                    opacityTo: 0.05,
+                    stops: [0, 90, 100]
+                }
+            },
+            markers: {
+                size: [4, 5],
+                colors: ['#e5202e', '#0f172a'],
+                strokeColors: '#ffffff',
+                strokeWidth: 2,
+                hover: {
+                    size: 7
+                }
+            },
+            xaxis: {
+                categories: months,
+                labels: {
+                    style: {
+                        colors: '#64748b',
+                        fontSize: '11px',
+                        fontWeight: 600
+                    }
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: [
+                {
+                    title: {
+                        text: 'Tickets Sold',
+                        style: {
+                            color: '#e5202e',
+                            fontSize: '11px',
+                            fontWeight: 700
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: '#64748b',
+                            fontSize: '11px'
+                        },
+                        formatter: function (val) {
+                            return Math.round(val);
+                        }
+                    }
+                },
+                {
+                    opposite: true,
+                    title: {
+                        text: 'Revenue (PKR M)',
+                        style: {
+                            color: '#0f172a',
+                            fontSize: '11px',
+                            fontWeight: 700
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: '#64748b',
+                            fontSize: '11px'
+                        },
+                        formatter: function (val) {
+                            return val.toFixed(1) + 'M';
+                        }
+                    }
+                }
+            ],
+            tooltip: {
+                shared: true,
+                intersect: false,
+                theme: 'light',
+                y: {
+                    formatter: function (val, opts) {
+                        if (opts.seriesIndex === 0) {
+                            return val + ' Tickets';
+                        }
+                        return 'PKR ' + val.toFixed(1) + ' Million';
+                    }
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                labels: {
+                    colors: '#475569'
+                }
+            },
+            grid: {
+                borderColor: '#f1f5f9',
+                strokeDashArray: 4
+            }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#ticket-sales-chart"), options);
+        chart.render();
+    });
+</script>
 @endsection

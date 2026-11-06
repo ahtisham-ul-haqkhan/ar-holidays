@@ -36,7 +36,7 @@
                     @endif
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">
-                    {{ $vendor->name }} &middot; ID #{{ $vendor->id }} &middot; Registered: {{ $vendor->created_at ? $vendor->created_at->format('d M Y') : 'N/A' }}
+                    {{ $vendor->name }} &middot; Registered: {{ $vendor->created_at ? $vendor->created_at->format('d M Y') : 'N/A' }}
                 </p>
             </div>
 

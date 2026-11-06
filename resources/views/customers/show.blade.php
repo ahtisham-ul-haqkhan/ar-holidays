@@ -14,7 +14,7 @@
         <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
         <a href="{{ route('customers.index') }}" class="hover:text-red-600 transition-colors">Customers</a>
         <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
-        <span class="text-slate-800 font-semibold">{{ $customer->name ?? 'Customer #' . $customer->id }}</span>
+        <span class="text-slate-800 font-semibold">{{ $customer->name ?? 'Customer' }}</span>
     </nav>
 
     <!-- Details Card (With Edit Button) -->
@@ -36,7 +36,7 @@
                     @endif
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">
-                    {{ $customer->title }} {{ $customer->name ?? 'Customer' }} &middot; ID #{{ $customer->id }} &middot; Registered: {{ $customer->created_at ? $customer->created_at->format('d M Y') : 'N/A' }}
+                    {{ $customer->title }} {{ $customer->name ?? 'Customer' }} &middot; Registered: {{ $customer->created_at ? $customer->created_at->format('d M Y') : 'N/A' }}
                 </p>
             </div>
 
