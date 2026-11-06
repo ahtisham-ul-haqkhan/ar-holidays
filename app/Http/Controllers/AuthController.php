@@ -49,6 +49,22 @@ class AuthController extends Controller
     }
 
     /**
+     * Handle password update request.
+     */
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        $this->authService->updatePassword($user, $request->all());
+
+        return back()->with('success', 'Password has been updated successfully!');
+    }
+
+    /**
      * Log out the current user session.
      */
     public function logout(Request $request): RedirectResponse
@@ -59,4 +75,3 @@ class AuthController extends Controller
             ->with('info', 'You have been successfully signed out.');
     }
 }
-

@@ -138,6 +138,9 @@
 
     </div>
 
+    <!-- Change Password Modal Component -->
+    @include('components.change-password-modal')
+
     <!-- Mobile Sidebar JavaScript Toggle -->
     <script>
         function toggleSidebar() {

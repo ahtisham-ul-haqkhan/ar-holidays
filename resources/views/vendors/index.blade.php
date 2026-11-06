@@ -152,9 +152,9 @@
                     @forelse($vendors as $vendor)
                         <tr class="hover:bg-slate-50/70 transition-colors group">
                             
-                            <!-- ID -->
+                            <!-- Serial No -->
                             <td class="py-4 px-5 text-slate-400 font-mono text-[11px]">
-                                #{{ $vendor->id }}
+                                #{{ $loop->iteration }}
                             </td>
 
                             <!-- Airline / Vendor Name -->

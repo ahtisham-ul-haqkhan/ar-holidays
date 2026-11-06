@@ -17,6 +17,9 @@ Route::middleware('auth')->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Password Management (Modal Submission)
+    Route::post('/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
+
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');

@@ -155,9 +155,9 @@
                     @forelse($customers as $customer)
                         <tr class="hover:bg-slate-50/70 transition-colors group">
                             
-                            <!-- ID -->
+                            <!-- Serial No -->
                             <td class="py-4 px-5 text-slate-400 font-mono text-[11px]">
-                                #{{ $customer->id }}
+                                #{{ $loop->iteration }}
                             </td>
 
                             <!-- Name with Title -->
