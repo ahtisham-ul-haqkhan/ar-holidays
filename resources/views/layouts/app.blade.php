@@ -113,8 +113,6 @@
             }
         }
     </script>
-    <!-- Cheetah Instant Navigation Engine -->
-    <script src="{{ asset('js/instant-navigate.js') }}"></script>
 </body>
 </html>
 
