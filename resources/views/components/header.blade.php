@@ -49,12 +49,12 @@
 
             <!-- Flight Bookings -->
             <a 
-                href="{{ route('dashboard') }}#flight-search" 
-                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all shrink-0">
-                <i class="fa-solid fa-plane text-[11px] text-slate-400"></i>
+                href="{{ route('tickets.create') }}" 
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold {{ request()->routeIs('tickets.create') ? 'bg-red-50 text-red-600 border border-red-200' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80' }} transition-all shrink-0">
+                <i class="fa-solid fa-plane text-[11px] {{ request()->routeIs('tickets.create') ? 'text-red-600' : 'text-slate-400' }}"></i>
                 <span>Flights</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-red-100 text-red-600">
-                    12
+                    New
                 </span>
             </a>
 

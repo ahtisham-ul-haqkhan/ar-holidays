@@ -1,7 +1,7 @@
 <!-- Change Password Modal -->
 <div 
     id="change-password-modal" 
-    class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 {{ ($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation')) ? '' : 'hidden' }}">
+    class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 {{ (isset($errors) && ($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))) ? '' : 'hidden' }}">
     
     <!-- Modal Card -->
     <div 
