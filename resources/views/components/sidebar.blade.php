@@ -120,6 +120,19 @@
                     <span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full font-semibold">New</span>
                 </a>
 
+                <!-- Visa Categories -->
+                <a href="{{ route('visa-categories.index') }}" class="group flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all {{ str_starts_with($currentRoute, 'visa-categories') ? 'bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg shadow-red-600/25 font-semibold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg {{ str_starts_with($currentRoute, 'visa-categories') ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300 group-hover:bg-red-600/20 group-hover:text-red-400' }} flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-passport text-sm"></i>
+                        </span>
+                        <span>Visa Categories</span>
+                    </div>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ str_starts_with($currentRoute, 'visa-categories') ? 'bg-white/25 text-white' : 'bg-slate-800 text-slate-300' }}">
+                        {{ \Illuminate\Support\Facades\Cache::remember('visa_categories_count_badge', 60, fn() => \App\Models\VisaCategory::count()) }}
+                    </span>
+                </a>
+
                 <a href="{{ route('dashboard') }}" class="group flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/60 hover:text-white transition-all">
                     <div class="flex items-center gap-3">
                         <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center group-hover:bg-red-600/20 group-hover:text-red-400 transition-colors">
@@ -143,6 +156,7 @@
                         <span>Vouchers & Invoices</span>
                     </div>
                 </a>
+
                 <a href="{{ route('dashboard') }}" class="group flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/60 hover:text-white transition-all">
                     <div class="flex items-center gap-3">
                         <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center group-hover:bg-red-600/20 group-hover:text-red-400 transition-colors">
